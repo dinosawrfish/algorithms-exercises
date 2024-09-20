@@ -3,19 +3,63 @@
   Implement a radix sort in a function called radixSort.
 
   You'll probably need several functions
-  
+
   You can implement it using a binary or decimal based bucketing but I'd recommend the decimal based buckets because
   it ends up being a lot more simple to implement.
 
 */
 
+// number = 1391, place=0, longerstNumber=4
+//returns 1
+
+function getDigit(number, place, longestNumber) {
+  const reverseNumber = number.toString().split("").reverse().join("");
+  const digit = reverseNumber.toString()[place];
+  if (!digit) {
+    return 0;
+  }
+
+  return digit;
+}
+
+// return 4
+function getLongestNumber(array) {
+  let biggestNum = 0;
+
+  for (let num of array) {
+    if (num > biggestNum) {
+      biggestNum = num;
+    }
+  }
+
+  return biggestNum.toString().length;
+}
+
 function radixSort(array) {
-  // code goes here
+  const longestNumber = getLongestNumber(array)
+
+  const buckets = [...Array(10)].map(_ => []);
+  // const buckets = Array(10).fill().map(() => []);
+
+  for (i = 0; i < longestNumber; i++) {
+    while (array.length) {
+      const num = array.shift();
+      const digit = getDigit(num, i, longestNumber);
+      buckets[digit].push(num);
+    }
+
+    for (j = 0; j < buckets.length; j++) {
+      while (buckets[j].length) {
+        array.push(buckets[j].shift());
+      }
+    }
+  }
+  return array;
 }
 
 // unit tests
 // do not modify the below code
-describe.skip("radix sort", function () {
+describe("radix sort", function () {
   it("should sort correctly", () => {
     const nums = [
       20,
